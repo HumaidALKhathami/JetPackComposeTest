@@ -11,12 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.jetpackcomposetest.flickrresponse.Photo
 import com.example.jetpackcomposetest.ui.theme.JetPackComposeTestTheme
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -113,15 +117,15 @@ fun HomeScreen(flickrViewModel: FlickrViewModel = hiltViewModel()) {
 fun Post(photo: Photo) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp),
+            .fillMaxWidth(),
         elevation = 5.dp
     ) {
         Column(
             modifier = Modifier.padding(vertical = 16.dp)
         ) {
             Text(text = photo.title)
-            GlideImage(imageModel = photo.url_s)
+
+            GlideImage(imageModel = photo.url_s, requestOptions = { RequestOptions.overrideOf(1080,720) })
         }
     }
 }
