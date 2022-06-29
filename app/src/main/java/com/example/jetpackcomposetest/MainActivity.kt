@@ -19,6 +19,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.example.jetpackcomposetest.flickrresponse.Photo
 import com.example.jetpackcomposetest.ui.theme.JetPackComposeTestTheme
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.glide.GlideImage
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -57,39 +59,48 @@ fun HomeScreen(flickrViewModel: FlickrViewModel = hiltViewModel()) {
 
     val lazyPhotos = flickrViewModel.getPhoto.collectAsLazyPagingItems()
 
+    val refreshState =
+        rememberSwipeRefreshState(isRefreshing = lazyPhotos.loadState.refresh is LoadState.Loading)
+
+
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
+        SwipeRefresh(
+            state = refreshState,
+            onRefresh = { lazyPhotos.refresh() }
+        ) {
+            LazyColumn() {
 
-        LazyColumn() {
-            items(lazyPhotos) { photo ->
-                Post(photo = photo!!)
-            }
-            lazyPhotos.apply {
-                when {
-                    loadState.refresh is LoadState.Loading -> {
-                        item { CircularProgressIndicator() }
-                    }
-                    loadState.append is LoadState.Loading -> {
-                        item { CircularProgressIndicator() }
-                    }
-                    loadState.refresh is LoadState.Error -> {
-                        val e = lazyPhotos.loadState.refresh as LoadState.Error
-                        item {
-                            ErrorItem(
-                                message = e.error.localizedMessage!!,
-                                modifier = Modifier,
-                                onClickRetry = { retry() }
-                            )
+                items(lazyPhotos) { photo ->
+                    Post(photo = photo!!)
+                }
+                lazyPhotos.apply {
+                    when {
+                        loadState.refresh is LoadState.Loading -> {
+                            item { CircularProgressIndicator() }
                         }
-                    }
-                    loadState.append is LoadState.Error -> {
-                        val e = lazyPhotos.loadState.append as LoadState.Error
-                        item {
-                            ErrorItem(
-                                message = e.error.localizedMessage!!,
-                                onClickRetry = { retry() }
-                            )
+                        loadState.append is LoadState.Loading -> {
+                            item { CircularProgressIndicator() }
+                        }
+                        loadState.refresh is LoadState.Error -> {
+                            val e = lazyPhotos.loadState.refresh as LoadState.Error
+                            item {
+                                ErrorItem(
+                                    message = e.error.localizedMessage!!,
+                                    modifier = Modifier,
+                                    onClickRetry = { retry() }
+                                )
+                            }
+                        }
+                        loadState.append is LoadState.Error -> {
+                            val e = lazyPhotos.loadState.append as LoadState.Error
+                            item {
+                                ErrorItem(
+                                    message = e.error.localizedMessage!!,
+                                    onClickRetry = { retry() }
+                                )
+                            }
                         }
                     }
                 }
