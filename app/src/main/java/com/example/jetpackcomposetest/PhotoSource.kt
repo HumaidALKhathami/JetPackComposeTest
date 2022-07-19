@@ -8,15 +8,18 @@ class PhotoSource(
     private val flickrRepo: FlickrRepo
 ) : PagingSource<Int, Photo>() {
 
+    override val keyReuseSupported: Boolean
+        get() = true
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
         return try {
             val nextPage = params.key ?: 1
-            val movieListResponse = flickrRepo.getPhotos(nextPage)
+            val flickrResponse = flickrRepo.getPhotos(nextPage)
 
             LoadResult.Page(
-                data = movieListResponse.photos.photo,
+                data = flickrResponse.photos.photo,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = movieListResponse.photos.page.plus(1)
+                nextKey = flickrResponse.photos.page.plus(1)
             )
         } catch (e: Exception) {
             LoadResult.Error(e)
