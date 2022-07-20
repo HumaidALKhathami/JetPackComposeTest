@@ -3,13 +3,16 @@ package com.example.jetpackcomposetest.ui
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.sp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
@@ -24,7 +27,7 @@ import com.skydoves.landscapist.glide.GlideImage
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun PostScreen(flickrViewModel: FlickrViewModel = hiltViewModel()) {
+fun PostScreen(flickrViewModel: FlickrViewModel) {
 
     val lazyPhotos = flickrViewModel.getPhoto.collectAsLazyPagingItems()
 
@@ -40,50 +43,56 @@ fun PostScreen(flickrViewModel: FlickrViewModel = hiltViewModel()) {
             state = refreshState,
             onRefresh = { lazyPhotos.refresh() }
         ) {
-            LazyColumn() {
-                item {
-                    Button(
-                        onClick = {
-                            Constants.isDarkMode.value = !Constants.isDarkMode.value
-                        },
-                        modifier = Modifier.wrapContentSize()
-                    ) {
-                        Text(text = "Change mode")
-                    }
-                }
-                items(lazyPhotos) { photo ->
-                    Post(photo = photo!!)
-                }
-                lazyPhotos.apply {
-                    when {
-                        loadState.refresh is LoadState.Loading -> {
-                            item { CircularProgressIndicator() }
-                        }
-                        loadState.append is LoadState.Loading -> {
-                            item { CircularProgressIndicator() }
-                        }
-                        loadState.refresh is LoadState.Error -> {
-                            val e = lazyPhotos.loadState.refresh as LoadState.Error
-                            item {
-                                ErrorItem(
-                                    message = e.error.localizedMessage!!,
-                                    modifier = Modifier,
-                                    onClickRetry = { retry() }
-                                )
-                            }
-                        }
-                        loadState.append is LoadState.Error -> {
-                            val e = lazyPhotos.loadState.append as LoadState.Error
-                            item {
-                                ErrorItem(
-                                    message = e.error.localizedMessage!!,
-                                    onClickRetry = { retry() }
-                                )
-                            }
+            if (lazyPhotos.itemCount == 0)
+                CircularProgressIndicator()
+            else
+                LazyColumn() {
+                    item {
+                        Button(
+                            onClick = {
+                                Constants.isDarkMode.value = !Constants.isDarkMode.value
+                            },
+                            modifier = Modifier.wrapContentSize()
+                        ) {
+                            Text(text = "Change mode")
                         }
                     }
+                    items(lazyPhotos) { photo ->
+                        Post(photo = photo!!)
+                    }
+                    lazyPhotos.apply {
+                        when {
+                            loadState.refresh is LoadState.Loading -> {
+                                item { CircularProgressIndicator() }
+                            }
+                            loadState.append is LoadState.Loading -> {
+                                item { CircularProgressIndicator() }
+                            }
+                            loadState.refresh is LoadState.Error -> {
+                                val e = lazyPhotos.loadState.refresh as LoadState.Error
+                                item {
+                                    ErrorItem(
+                                        message = e.error.localizedMessage!!,
+                                        modifier = Modifier,
+                                        onClickRetry = { retry() }
+                                    )
+                                }
+                            }
+                            loadState.append is LoadState.Error -> {
+                                val e = lazyPhotos.loadState.append as LoadState.Error
+                                item {
+                                    ErrorItem(
+                                        message = e.error.localizedMessage!!,
+                                        onClickRetry = { retry() }
+                                    )
+                                }
+                            }
+                            loadState.refresh.endOfPaginationReached -> {
+
+                            }
+                        }
+                    }
                 }
-            }
         }
     }
 }
@@ -96,13 +105,20 @@ fun Post(photo: Photo) {
         elevation = 5.dp
     ) {
         Column(
-            modifier = Modifier.padding(vertical = 16.dp)
+            modifier = Modifier.padding(4.dp),
         ) {
-            Text(text = photo.title)
-
-            GlideImage(
-                imageModel = photo.url_s,
-                requestOptions = { RequestOptions.overrideOf(1080, 720) })
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                ProfileImage(url = photo.url_s)
+                Spacer(modifier = Modifier.size(8.dp))
+                UserName(username = photo.title)
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(text = photo.description._content)
+            Spacer(modifier = Modifier.size(12.dp))
+            ContentImage(url = photo.url_s)
         }
     }
 }
@@ -129,4 +145,33 @@ fun ErrorItem(
             Text(text = "Try again")
         }
     }
+}
+
+@Composable
+fun ProfileImage(url: String) {
+    GlideImage(
+        imageModel = url,
+        requestOptions = { RequestOptions.overrideOf(1080, 720) },
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+    )
+}
+
+@Composable
+fun ContentImage(url: String) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        GlideImage(
+            imageModel = url,
+            requestOptions = { RequestOptions.overrideOf(1080, 720) },
+            modifier = Modifier
+                .size(200.dp)
+                .align(Alignment.Center)
+        )
+    }
+}
+
+@Composable
+fun UserName(username: String) {
+    Text(text = username, fontSize = 16.sp, fontWeight = FontWeight.Bold)
 }

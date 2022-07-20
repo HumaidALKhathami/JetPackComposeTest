@@ -19,7 +19,7 @@ class PhotoSource(
             LoadResult.Page(
                 data = flickrResponse.photos.photo,
                 prevKey = if (nextPage == 1) null else nextPage - 1,
-                nextKey = flickrResponse.photos.page.plus(1)
+                nextKey = if (nextPage == flickrResponse.photos.pages)null else flickrResponse.photos.page.plus(1)
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

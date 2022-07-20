@@ -10,12 +10,10 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.example.jetpackcomposetest.common.Constants
 import com.example.jetpackcomposetest.ui.BottomNavigationBar
-import com.example.jetpackcomposetest.ui.HomeScreen
 import com.example.jetpackcomposetest.ui.Navigation
 import com.example.jetpackcomposetest.ui.theme.JetPackComposeTestTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -72,11 +70,23 @@ class MainActivity : ComponentActivity() {
                             items = bottomNavItems,
                             navController = navController,
                             onItemClick = {
-                                navController.navigate(it.route)
+                                navController.navigate(it.route) {
+                                    // Pop up to the start destination of the graph to
+                                    // avoid building up a large stack of destinations
+                                    // on the back stack as users select items
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    // Avoid multiple copies of the same destination when
+                                    // reselecting the same item
+                                    launchSingleTop = true
+                                    // Restore state when reselecting a previously selected item
+                                    restoreState = true
+                                }
                             }
                         )
                     }
-                ){
+                ) {
                     Navigation(navController = navController, pages = pages)
                 }
             }
