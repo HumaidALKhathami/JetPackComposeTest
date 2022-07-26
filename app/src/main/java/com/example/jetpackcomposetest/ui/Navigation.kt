@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.jetpackcomposetest.PhotoType
 import com.example.jetpackcomposetest.common.Screen
-import com.example.jetpackcomposetest.flickrresponse.PhotoArg
+import com.example.jetpackcomposetest.flickrresponse.Photo
 
 @Composable
 fun Navigation(navController: NavHostController, pages: List<String>) {
@@ -18,10 +18,10 @@ fun Navigation(navController: NavHostController, pages: List<String>) {
         }
         composable(Screen.PostDetails.route + "/{photo}", arguments = listOf(
             navArgument("photo") {
-//                type = PhotoType()
+                type = PhotoType()
             }
         )) {
-            val photo = it.arguments?.getParcelable<PhotoArg>("photo")
+            val photo = it.arguments?.getParcelable<Photo>("photo")
             PostDetailsScreen(photo!!)
         }
 

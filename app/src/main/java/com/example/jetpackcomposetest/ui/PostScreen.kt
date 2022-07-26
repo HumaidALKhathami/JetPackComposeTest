@@ -25,7 +25,6 @@ import com.example.jetpackcomposetest.FlickrViewModel
 import com.example.jetpackcomposetest.common.Constants
 import com.example.jetpackcomposetest.common.Screen
 import com.example.jetpackcomposetest.flickrresponse.Photo
-import com.example.jetpackcomposetest.flickrresponse.PhotoArg
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.glide.GlideImage
@@ -129,14 +128,8 @@ fun Post(photo: Photo, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                val photoArg = PhotoArg(
-                    photo.id,
-                    photo.title,
-                    photo.url_s,
-                    photo.description._content,
-                    photo.datetaken
-                )
-                navController.navigate(Screen.PostDetails.route + "?photo=$photoArg")
+
+                navController.navigate(Screen.PostDetails.route + "?photo=${photo}")
             }
             ,
         elevation = 5.dp

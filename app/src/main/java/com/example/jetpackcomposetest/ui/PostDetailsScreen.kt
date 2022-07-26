@@ -12,10 +12,10 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.jetpackcomposetest.flickrresponse.PhotoArg
+import com.example.jetpackcomposetest.flickrresponse.Photo
 
 @Composable
-fun PostDetailsScreen(photo: PhotoArg) {
+fun PostDetailsScreen(photo: Photo) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Card(modifier = Modifier.fillMaxWidth()) {
             Row {
@@ -27,7 +27,7 @@ fun PostDetailsScreen(photo: PhotoArg) {
             }
         }
         Card(modifier = Modifier.fillMaxWidth()) {
-            Text(text = photo.description)
+            Text(text = photo.description._content)
         }
         Card(modifier = Modifier.fillMaxWidth()) {
             Row(horizontalArrangement = Arrangement.SpaceAround) {

@@ -2,22 +2,22 @@ package com.example.jetpackcomposetest
 
 import android.os.Bundle
 import androidx.navigation.NavType
-import com.example.jetpackcomposetest.flickrresponse.PhotoArg
+import com.example.jetpackcomposetest.flickrresponse.Photo
 import com.google.gson.Gson
 
 
-class PhotoType : NavType<PhotoArg>(
+class PhotoType : NavType<Photo> (
     false
 ) {
-    override fun get(bundle: Bundle, key: String): PhotoArg? {
+    override fun get(bundle: Bundle, key: String): Photo? {
         return bundle.getParcelable(key)
     }
 
-    override fun parseValue(value: String): PhotoArg {
-        return Gson().fromJson(value, PhotoArg::class.java)
+    override fun parseValue(value: String): Photo {
+        return Gson().fromJson(value, Photo::class.java)
     }
 
-    override fun put(bundle: Bundle, key: String, value: PhotoArg) {
+    override fun put(bundle: Bundle, key: String, value: Photo) {
         bundle.putParcelable(key, value)
     }
 }
