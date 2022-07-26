@@ -16,6 +16,15 @@ fun Navigation(navController: NavHostController, pages: List<String>) {
         composable(Screen.Home.route) {
             HomeScreen(pages = pages, navController = navController)
         }
+        composable(Screen.PostDetails.route + "/{photo}", arguments = listOf(
+            navArgument("photo") {
+//                type = PhotoType()
+            }
+        )) {
+            val photo = it.arguments?.getParcelable<PhotoArg>("photo")
+            PostDetailsScreen(photo!!)
+        }
+
         composable(Screen.Notifications.route) {
             Text(text = "notifications screen")
         }
@@ -25,13 +34,6 @@ fun Navigation(navController: NavHostController, pages: List<String>) {
         composable(Screen.Groups.route) {
             Text(text = "Groups Screen")
         }
-//        composable(Screen.PostDetails.route + "/{photo}", arguments = listOf(
-//            navArgument("photo") {
-//                type = PhotoType()
-//            }
-//        )) {
-//            val photo = it.arguments?.getParcelable<PhotoArg>("photo")
-//            PostDetailsScreen(photo!!)
-//        }
+
     }
 }
