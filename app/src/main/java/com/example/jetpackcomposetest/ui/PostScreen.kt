@@ -1,6 +1,7 @@
 package com.example.jetpackcomposetest.ui
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,6 +28,7 @@ import com.example.jetpackcomposetest.common.Screen
 import com.example.jetpackcomposetest.flickrresponse.Photo
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.gson.Gson
 import com.skydoves.landscapist.glide.GlideImage
 
 private const val TAG = "PostScreen"
@@ -128,8 +130,8 @@ fun Post(photo: Photo, navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-
-                navController.navigate(Screen.PostDetails.route + "?photo=${photo}")
+                val photoJson = Uri.encode(Gson().toJson(photo))
+                navController.navigate(Screen.PostDetails.route + "/${photoJson}")
             }
             ,
         elevation = 5.dp

@@ -18,7 +18,7 @@ fun Navigation(navController: NavHostController, pages: List<String>) {
         }
         composable(Screen.PostDetails.route + "/{photo}", arguments = listOf(
             navArgument("photo") {
-                type = PhotoType()
+                type = Photo.NavigationType
             }
         )) {
             val photo = it.arguments?.getParcelable<Photo>("photo")
