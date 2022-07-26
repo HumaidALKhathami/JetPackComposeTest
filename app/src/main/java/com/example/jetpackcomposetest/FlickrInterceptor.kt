@@ -7,7 +7,7 @@ import okhttp3.Response
 
 private const val FORMAT = "json"
 private const val JSON_CALL_BACK = "1"
-private const val EXTRAS = "url_s,description"
+private const val EXTRAS = "url_s,description,date_taken"
 private const val PER_PAGE = "10"
 
 class FlickrInterceptor : Interceptor {

@@ -5,23 +5,33 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.google.accompanist.pager.ExperimentalPagerApi
+import androidx.navigation.navArgument
+import com.example.jetpackcomposetest.PhotoType
+import com.example.jetpackcomposetest.common.Screen
+import com.example.jetpackcomposetest.flickrresponse.PhotoArg
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Navigation(navController: NavHostController, pages: List<String>) {
     NavHost(navController = navController, startDestination = "home") {
-        composable("home") {
-            HomeScreen(pages = pages)
+        composable(Screen.Home.route) {
+            HomeScreen(pages = pages, navController = navController)
         }
-        composable("notifications") {
+        composable(Screen.Notifications.route) {
             Text(text = "notifications screen")
         }
-        composable("search") {
+        composable(Screen.Search.route) {
             Text(text = "Search Screen")
         }
-        composable("Groups") {
+        composable(Screen.Groups.route) {
             Text(text = "Groups Screen")
         }
+//        composable(Screen.PostDetails.route + "/{photo}", arguments = listOf(
+//            navArgument("photo") {
+//                type = PhotoType()
+//            }
+//        )) {
+//            val photo = it.arguments?.getParcelable<PhotoArg>("photo")
+//            PostDetailsScreen(photo!!)
+//        }
     }
 }

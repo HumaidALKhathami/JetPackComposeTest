@@ -1,9 +1,13 @@
 package com.example.jetpackcomposetest.flickrresponse
 
-data class Photo(
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class PhotoArg(
     val id: String,
     val title: String,
     val url_s: String,
-    val description: Description,
+    val description: String,
     val datetaken: String
-)
+) : Parcelable
