@@ -16,7 +16,11 @@ import com.example.jetpackcomposetest.flickrresponse.Photo
 
 @Composable
 fun PostDetailsScreen(photo: Photo) {
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
         Card(modifier = Modifier.fillMaxWidth()) {
             Row {
                 ProfileImage(url = photo.url_s)
@@ -26,9 +30,15 @@ fun PostDetailsScreen(photo: Photo) {
                 Text(text = photo.datetaken)
             }
         }
+        Spacer(modifier = Modifier.size(16.dp))
         Card(modifier = Modifier.fillMaxWidth()) {
-            Text(text = photo.description._content)
+            Column {
+                Text(text = photo.description._content)
+                Spacer(modifier = Modifier.size(12.dp))
+                ContentImage(url = photo.url_s)
+            }
         }
+        Spacer(modifier = Modifier.size(16.dp))
         Card(modifier = Modifier.fillMaxWidth()) {
             Row(horizontalArrangement = Arrangement.SpaceAround) {
                 Icon(imageVector = Icons.Default.Send, contentDescription = "")

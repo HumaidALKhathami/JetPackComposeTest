@@ -53,9 +53,9 @@ fun PostScreen(flickrViewModel: FlickrViewModel, navController: NavController) {
             state = refreshState,
             onRefresh = { photos.refresh() }
         ) {
-//            if (photos.itemCount == 0)
-//                Text(text = "Hello world!")
-//            else
+            if (photos.itemCount == 0)
+                CircularProgressIndicator()
+            else
             LazyColumn() {
                 item {
                     Button(

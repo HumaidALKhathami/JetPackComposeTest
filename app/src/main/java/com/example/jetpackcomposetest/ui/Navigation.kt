@@ -6,13 +6,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.jetpackcomposetest.PhotoType
 import com.example.jetpackcomposetest.common.Screen
 import com.example.jetpackcomposetest.flickrresponse.Photo
 
 @Composable
 fun Navigation(navController: NavHostController, pages: List<String>) {
-    NavHost(navController = navController, startDestination = "home") {
+    NavHost(navController = navController, startDestination = Screen.OTP.route) {
         composable(Screen.Home.route) {
             HomeScreen(pages = pages, navController = navController)
         }
@@ -34,6 +33,8 @@ fun Navigation(navController: NavHostController, pages: List<String>) {
         composable(Screen.Groups.route) {
             Text(text = "Groups Screen")
         }
-
+        composable(Screen.OTP.route) {
+            OTPScreen(navController)
+        }
     }
 }
