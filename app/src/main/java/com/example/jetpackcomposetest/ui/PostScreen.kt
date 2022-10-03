@@ -175,6 +175,7 @@ fun Post(photo: Photo, navController: NavController) {
 
 @Composable
 fun ErrorItem(
+
     message: String,
     modifier: Modifier = Modifier,
     onClickRetry: () -> Unit
