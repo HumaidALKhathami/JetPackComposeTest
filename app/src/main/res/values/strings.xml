@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">JetPackComposeTest</string>
+    <string name="try_again">Try again</string>
+    <string name="image">Image</string>
+    <string name="post_details">Post Details</string>
+    <string name="search_text">Type something you want to search for Images for</string>
+    <string name="search_placeholder">Search</string>
+    <string name="search_error_message">There was something wrong with the search, please retry with more meaningful words</string>
+    <string name="home">Home</string>
+    <string name="notification_screen">Notifications screen</string>
+    <string name="groups_screen">Groups screen</string>
+    <string name="very_urgent">Very Urgent</string>
+    <string name="urgent">Urgent</string>
+    <string name="normal">Normal</string>
+    <string name="notifications">Notification</string>
+    <string name="groups">Groups</string>
+    <string name="search">Search</string>
+    <string name="change_language">Change Language</string>
+    <string name="select_image">Select Image from gallery</string>
+    <string name="status_dialog">user status</string>
+    <string name="cancel"> cancel </string>
+    <string name="online"> online </string>
+    <string name="writing"> is writing... </string>
+    <string name="last_seen"> last seen since </string>
+
+    <string name="light_mood">set to light mood</string>
+    <string name="dark_mood">set to dark mood</string>
+    <string name="national_day_mood">set to national day mood</string>
+    <string name="videos">videos</string>
 </resources>

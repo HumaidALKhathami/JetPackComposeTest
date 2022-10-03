@@ -7,4 +7,6 @@ sealed class Screen(val route: String){
     object Search: Screen("search")
     object PostDetails: Screen("post_details")
     object OTP: Screen("one_time_password")
+    object ImageScreen: Screen("image")
+    object VideoPreview: Screen("video")
 }

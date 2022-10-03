@@ -14,7 +14,7 @@ class FlickrInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
 
-        val newUrl: HttpUrl = originalRequest.url().newBuilder()
+        val newUrl: HttpUrl = originalRequest.url.newBuilder()
             .addQueryParameter("api_key", Constants.FLICKR_API_KEY)
             .addQueryParameter("format", FORMAT)
             .addQueryParameter("nojsoncallback", JSON_CALL_BACK)

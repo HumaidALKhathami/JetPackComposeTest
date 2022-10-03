@@ -10,4 +10,10 @@ interface FlickrApi {
     suspend fun getPhotos(
         @Query("page") pageNumber: Int
     ): FlickrResponse
+
+    @GET("services/rest/?method=flickr.photos.search")
+    suspend fun searchPhotos(
+        @Query("text") query:String,
+        @Query("page") pageNumber: Int
+    ): FlickrResponse
 }

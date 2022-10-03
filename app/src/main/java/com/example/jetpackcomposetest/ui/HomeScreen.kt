@@ -10,9 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.jetpackcomposetest.FlickrViewModel
+import com.example.jetpackcomposetest.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -26,24 +28,23 @@ fun HomeScreen(pages: List<String>, viewModel: FlickrViewModel = hiltViewModel()
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
 
-    Column {
-//        TopAppBar(
-//            backgroundColor = Color.White
-//        ) {
-////            ProfileImage(url = Icons.Default.Home)
-//            Text(text = "Home")
-//            Icon(imageVector = Icons.Default.Home, contentDescription = "")
-//        }
+    Column {TopAppBar(
+        backgroundColor = MaterialTheme.colors.background
+    ) {
+//        ProfileImage(url = Icons.Default.Home)
+        Text(text = stringResource(id = R.string.home))
+        Icon(imageVector = Icons.Default.Home, contentDescription = "")
+    }
         ScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
-//            indicator = { tabPositions ->
-//                TabRowDefaults.Indicator(
-//                    modifier = Modifier.pagerTabIndicatorOffset(
-//                        pagerState,
-//                        tabPositions
-//                    )
-//                )
-//            },
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    modifier = Modifier.pagerTabIndicatorOffset(
+                        pagerState,
+                        tabPositions
+                    )
+                )
+            },
             backgroundColor = Color.Transparent,
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -64,8 +65,16 @@ fun HomeScreen(pages: List<String>, viewModel: FlickrViewModel = hiltViewModel()
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colors.background
             ) {
-                Column {
-                    PostScreen(viewModel, navController)
+
+                when(pagerState.currentPage) {
+                    3 -> {
+                        VideoScreen(navController = navController)
+                    }
+                    else -> {
+                        Column {
+                            PostScreen(viewModel.getPhoto, navController, false)
+                        }
+                    }
                 }
             }
         }

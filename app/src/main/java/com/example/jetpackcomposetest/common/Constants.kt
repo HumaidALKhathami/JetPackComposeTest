@@ -8,6 +8,6 @@ object Constants {
 
     const val FLICKR_BASE_URL = "https://www.flickr.com/"
 
-    val isDarkMode = mutableStateOf(false)
+    val isDarkMode = mutableStateOf(0)
 
 }

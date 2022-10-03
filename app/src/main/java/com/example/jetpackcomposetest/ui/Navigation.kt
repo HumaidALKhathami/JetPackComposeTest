@@ -2,10 +2,13 @@ package com.example.jetpackcomposetest.ui
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.jetpackcomposetest.R
 import com.example.jetpackcomposetest.common.Screen
 import com.example.jetpackcomposetest.flickrresponse.Photo
 
@@ -21,20 +24,40 @@ fun Navigation(navController: NavHostController, pages: List<String>) {
             }
         )) {
             val photo = it.arguments?.getParcelable<Photo>("photo")
-            PostDetailsScreen(photo!!)
+            PostDetailsScreen(photo = photo!!, navController = navController)
         }
 
         composable(Screen.Notifications.route) {
-            Text(text = "notifications screen")
+            Text(text = stringResource(id = R.string.notification_screen))
         }
         composable(Screen.Search.route) {
-            Text(text = "Search Screen")
+            SearchScreen(navController = navController)
         }
         composable(Screen.Groups.route) {
-            Text(text = "Groups Screen")
+            GroupsScreen(navController = navController)
         }
         composable(Screen.OTP.route) {
             OTPScreen(navController)
+        }
+        composable(Screen.ImageScreen.route + "/{imageUrl}" , arguments = listOf(
+            navArgument("imageUrl"){
+                type = NavType.StringType
+            }
+        )){
+            val url = it.arguments?.getString("imageUrl")
+            ImageScreen(url = url!!, navController = navController)
+        }
+        composable(Screen.VideoPreview.route + "/{videoUrl}" + "/{time}" , arguments = listOf(
+            navArgument("videoUrl"){
+                type = NavType.StringType
+            },
+            navArgument("time"){
+                type = NavType.LongType
+            }
+        )){
+            val url = it.arguments?.getString("videoUrl")
+            val time = it.arguments?.getLong("time")
+            VideoPreview(url = url!!, time = time!!)
         }
     }
 }

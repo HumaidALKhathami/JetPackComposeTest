@@ -27,9 +27,11 @@ import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavController
 import com.example.jetpackcomposetest.common.Screen
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val TAG = "OTPScreen"
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OTPScreen(navController: NavController) {
 
@@ -45,7 +47,7 @@ fun OTPScreen(navController: NavController) {
         mutableStateOf(false)
     }
 
-    if (timer.value > 0){
+    if (timer.value > 0) {
         LaunchedEffect(isOtpResent.value) {
             while (timer.value > 0) {
                 delay(1000L)
@@ -54,8 +56,6 @@ fun OTPScreen(navController: NavController) {
         }
     }
 
-
-    Log.d(TAG, "OTPScreen: hello from otp screen")
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -72,36 +72,24 @@ fun OTPScreen(navController: NavController) {
         )
         if (!isOtpCorrect.value)
             Text(text = "the OTP entered is not correct!", color = Color.Red)
-//        Row(
-////            modifier = Modifier.fillMaxWidth(),
-////            verticalAlignment = Alignment.CenterVertically,
-////            horizontalArrangement = Arrangement.SpaceAround
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(top = 15.dp, start = 15.dp, end = 15.dp),
-//            horizontalArrangement = Arrangement.SpaceEvenly
-//        ) {
+
         OTPTextFiled(modifier = Modifier, isOTPCorrect = isOtpCorrect) { otpEntered ->
             Log.d(TAG, "OTPScreen: $otpEntered")
             if (otpEntered == "1111")
                 navController.navigate(Screen.Home.route)
             else
                 isOtpCorrect.value = false
-
-
         }
-//            CommonOtpTextField(otp = otpOne)
-//            CommonOtpTextField(otp = otpTwo)
-//            CommonOtpTextField(otp = otpThree)
-//            CommonOtpTextField(otp = otpFour)
-//            OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.size(36.dp))
-//            OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.size(36.dp))
-//            OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.size(36.dp))
-//            OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.size(36.dp))
-//        }
         if (timer.value > 0) {
             Text(text = "Activation code will expire after:")
-            Text(text = "${timer.value / 1000 / 60}:${String.format("%02d",timer.value / 1000 % 60)}")
+            Text(
+                text = "${timer.value / 1000 / 60}:${
+                    String.format(
+                        "%02d",
+                        timer.value / 1000 % 60
+                    )
+                }"
+            )
         } else {
             Text(
                 text = "resend OTP",
@@ -114,28 +102,6 @@ fun OTPScreen(navController: NavController) {
             )
         }
     }
-}
-
-@Composable
-fun CommonOtpTextField(otp: MutableState<String>) {
-    val max = 1
-    OutlinedTextField(
-        value = otp.value,
-        singleLine = true,
-        onValueChange = {
-            if (it.length <= max) {
-                otp.value = it
-            }
-        },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-        modifier = Modifier
-            .width(60.dp)
-            .height(60.dp),
-        maxLines = 1,
-        textStyle = LocalTextStyle.current.copy(
-            textAlign = TextAlign.Center
-        )
-    )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -154,6 +120,18 @@ fun OTPTextFiled(
     val focusRequesters: List<FocusRequester> = remember {
         (0 until OTPLength).map { FocusRequester() }
     }
+
+    val isEnabled = remember {
+        mutableStateListOf(*(0 until OTPLength).map { it == 0 }.toTypedArray())
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    DisposableEffect(Unit) {
+        focusRequesters[0].requestFocus()
+        onDispose { }
+    }
+
     Row(modifier = modifier.padding(start = 60.dp, end = 60.dp)) {
         (0 until OTPLength).forEach { index ->
             OutlinedTextField(
@@ -164,25 +142,33 @@ fun OTPTextFiled(
                         val cellValue = enteredNumbers[index]
                         if (event.type == KeyEventType.KeyUp) {
                             if (event.key == Key.Backspace && cellValue == "" && index != 0) {
+                                isEnabled[index] = false
                                 focusRequesters
                                     .getOrNull(index - 1)
                                     ?.requestFocus()
                                 enteredNumbers[index - 1] = ""
 
                             } else if (cellValue != "") {
-                                focusRequesters
-                                    .getOrNull(index + 1)
-                                    ?.requestFocus()
+                                coroutineScope.launch {
+                                   if (index != OTPLength - 1) {
+                                        isEnabled[index + 1] = true
+                                    }
+//                                    delay(10)
+                                    focusRequesters
+                                        .getOrNull(index + 1)
+                                        ?.requestFocus()
+                                }
                             }
                         }
                         false
                     }
                     .padding(vertical = 2.dp)
-                    .focusOrder(focusRequesters[index])
-                    .focusRequester(focusRequesters[index]),
+                    .focusRequester(focusRequesters[index])
+                    .focusOrder(focusRequesters[index]),
                 colors = TextFieldDefaults.textFieldColors(
                     errorLabelColor = Color.Red
                 ),
+
                 isError = !isOTPCorrect.value,
                 singleLine = true,
                 value = enteredNumbers[index],
@@ -195,15 +181,29 @@ fun OTPTextFiled(
                         if (focusRequesters[index].freeFocus()) {
                             enteredNumbers[index] = value
                             if (enteredNumbers[index].isBlank() && index > 0 && index < OTPLength) {
+                                isEnabled[index] = false
                                 focusRequesters[index - 1].requestFocus()
                             } else if (index < OTPLength - 1) {
-                                focusRequesters[index + 1].requestFocus()
+                                coroutineScope.launch{
+                                    isEnabled[index + 1] = true
+                                    delay(50)
+                                    focusRequesters[index + 1].requestFocus()
+                                }
                             } else if (enteredNumbers.size == OTPLength) {
                                 whenFull(enteredNumbers.joinToString(separator = ""))
+                                if (!isOTPCorrect.value){
+                                    coroutineScope.launch{
+                                        enteredNumbers.replaceAll { "" }
+                                        isEnabled.replaceAll { false }.also { isEnabled[0] = true }
+                                        delay(50)
+                                        focusRequesters[0].requestFocus()
+                                    }
+                                }
                             }
                         }
                     }
                 },
+                enabled = isEnabled[index],
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Next

@@ -28,15 +28,30 @@ private val LightColorPalette = lightColors(
     */
 )
 
+private val NationalDayColorPalette = darkColors(
+    primary = lightGreen,
+    primaryVariant = darkGreen,
+    secondary = lime
+)
+
 @Composable
 fun JetPackComposeTestTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Int = 0,
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
+    val colors = when (darkTheme) {
+        0 -> {
+            LightColorPalette
+        }
+        1 -> {
+            DarkColorPalette
+        }
+        2 -> {
+            NationalDayColorPalette
+        }
+        else -> {
+            LightColorPalette
+        }
     }
 
     MaterialTheme(

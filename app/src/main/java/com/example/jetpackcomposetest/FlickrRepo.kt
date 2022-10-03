@@ -9,8 +9,8 @@ private const val TAG = "FlickrRepo"
 class FlickrRepo @Inject constructor(
     private val flickrApi: FlickrApi
 ) {
-    suspend fun getPhotos(pageNumber: Int): FlickrResponse {
-        Log.d(TAG, "getPhotos: new Request $pageNumber")
-       return flickrApi.getPhotos(pageNumber)
-    }
+    suspend fun getPhotos(pageNumber: Int): FlickrResponse = flickrApi.getPhotos(pageNumber)
+
+
+    suspend fun searchPhotos(query: String, pageNumber: Int): FlickrResponse = flickrApi.searchPhotos(query, pageNumber)
 }
